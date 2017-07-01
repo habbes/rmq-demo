@@ -37,7 +37,8 @@ init();
 function init () {
     setClientId();
     connectSocket();
-    sendIdMsg();
+    sendIdMessage();
+    setMessageHandler();
 }
 
 /**
@@ -55,10 +56,22 @@ function connectSocket () {
     socket = new WebSocket('ws://localhost:3000/jobs');
 }
 
-function sendIdMsg () {
+function sendIdMessage () {
     socket.onopen = function () {
-        var msg = buildIdMsg(clientId);
+        var msg = buildIdMessage(clientId);
         sendMessage(msg);
+    };
+}
+
+function setMessageHandler () {
+    socket.onmessage = function (e) {
+        var msg = JSON.parse(e.data);
+        switch (msg.type) {
+            case 'id':
+                return handleIdMessage(msg);
+            default:
+                console.warn("Unhandled message:", msg);
+        }
     };
 }
 
@@ -75,11 +88,18 @@ function generateClientId () {
         Math.random().toString(16).substr(2);
 }
 
-function buildIdMsg (id) {
+function buildIdMessage (id) {
     return {
         type: 'id',
         clientId: id
     };
+}
+
+// MESSAGE HANDLERS
+
+function handleIdMessage (msg) {
+    serverId = msg.serverId;
+    document.querySelector("#serverId").textContent = serverId;
 }
 
 </script>    
