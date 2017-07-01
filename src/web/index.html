@@ -1,9 +1,32 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <title>RabbitMQ Demo</title>
-    </head>
-    <body>
-        <h1>RabbitMQ</h1>
-    </body>
+<head>
+    <title>RabbitMQ Demo</title>
+</head>
+<body>
+    <header>
+        <h1>RabbitMQ Demo</h1>
+    </header>
+
+    <div class="main">
+        <div class="left">
+            <div class="client-details">
+                <div>Client ID: <span id="clientId"></span></div>
+                <div>Connected to: <span id="serverId"></span></div>
+            </div>
+            <div class="job-form">
+                <h3>New Job</h3>
+                <input id="newJobData" type="text" placeholder="Enter text input">
+                <button id="newJobBtn">Submit Job</button> 
+            </div>
+        </div>
+        <div class="right">
+            <h4>Job Results</h4>
+        </div>
+    </div>
+    
+    <footer>
+        <a href="https://github.com/habbes/rmq-demo">Documentation and Source Code</a>
+    </footer>
+</body>
 </html>
