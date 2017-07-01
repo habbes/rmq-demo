@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/habbes/rmq-demo/issues"
   },
-  "homepage": "https://github.com/habbes/rmq-demo#readme"
+  "homepage": "https://github.com/habbes/rmq-demo#readme",
+  "dependencies": {
+    "ws": "^3.0.0"
+  }
 }

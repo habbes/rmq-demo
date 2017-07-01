@@ -30,12 +30,14 @@
     </footer>
 <script>
 
-var clientId, serverId;
+var clientId, serverId, socket;
 
 init();
 
 function init () {
     setClientId();
+    connectSocket();
+    sendIdMsg();
 }
 
 /**
@@ -47,12 +49,37 @@ function setClientId () {
 }
 
 /**
+ * establish websocket connection to server
+ */
+function connectSocket () {
+    socket = new WebSocket('ws://localhost:3000/jobs');
+}
+
+function sendIdMsg () {
+    socket.onopen = function () {
+        var msg = buildIdMsg(clientId);
+        sendMessage(msg);
+    };
+}
+
+function sendMessage (msg) {
+    socket.send(JSON.stringify(msg));
+}
+
+/**
  * generates a random id to be assigned to the client app
  * @return {String}
  */
 function generateClientId () {
     return Math.random().toString(16).substr(2) + 
         Math.random().toString(16).substr(2);
+}
+
+function buildIdMsg (id) {
+    return {
+        type: 'id',
+        clientId: id
+    };
 }
 
 </script>    
