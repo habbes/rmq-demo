@@ -56,6 +56,11 @@ function connectSocket () {
     socket = new WebSocket('ws://localhost:3000/jobs');
 }
 
+/**
+ * send id message to identify self to server
+ * this is the first message sent to server, right
+ * after socket connection is open
+ */
 function sendIdMessage () {
     socket.onopen = function () {
         var msg = buildIdMessage(clientId);
@@ -63,6 +68,11 @@ function sendIdMessage () {
     };
 }
 
+/**
+ * sets up the websocket message handler
+ * assigning handlers to messages based on their
+ * type
+ */
 function setMessageHandler () {
     socket.onmessage = function (e) {
         var msg = JSON.parse(e.data);
@@ -75,19 +85,20 @@ function setMessageHandler () {
     };
 }
 
+/**
+ * send a message to the server
+ * @param {Object} msg
+ */
 function sendMessage (msg) {
     socket.send(JSON.stringify(msg));
 }
 
 /**
- * generates a random id to be assigned to the client app
- * @return {String}
+ * constructs and ID message
+ * used to identify the client to the server
+ * @param {String} id client id
+ * @return {Object}
  */
-function generateClientId () {
-    return Math.random().toString(16).substr(2) + 
-        Math.random().toString(16).substr(2);
-}
-
 function buildIdMessage (id) {
     return {
         type: 'id',
@@ -100,6 +111,15 @@ function buildIdMessage (id) {
 function handleIdMessage (msg) {
     serverId = msg.serverId;
     document.querySelector("#serverId").textContent = serverId;
+}
+
+/**
+ * generates a random id to be assigned to the client app
+ * @return {String}
+ */
+function generateClientId () {
+    return Math.random().toString(16).substr(2) + 
+        Math.random().toString(16).substr(2);
 }
 
 </script>    
