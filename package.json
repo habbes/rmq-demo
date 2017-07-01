@@ -2,7 +2,7 @@
   "name": "y",
   "version": "1.0.0",
   "description": "App to demonstrating rabbitmq messaging",
-  "main": "src/web/index.js",
+  "main": "src/server/index.js",
   "directories": {
     "doc": "doc",
     "test": "test"
