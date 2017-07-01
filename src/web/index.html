@@ -28,5 +28,33 @@
     <footer>
         <a href="https://github.com/habbes/rmq-demo">Documentation and Source Code</a>
     </footer>
+<script>
+
+var clientId, serverId;
+
+init();
+
+function init () {
+    setClientId();
+}
+
+/**
+ * generates and assigns clientId
+ */
+function setClientId () {
+    clientId = generateClientId();
+    document.querySelector("#clientId").textContent = clientId;
+}
+
+/**
+ * generates a random id to be assigned to the client app
+ * @return {String}
+ */
+function generateClientId () {
+    return Math.random().toString(16).substr(2) + 
+        Math.random().toString(16).substr(2);
+}
+
+</script>    
 </body>
 </html>
