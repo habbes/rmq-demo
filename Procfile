@@ -1,2 +1,2 @@
 web: npm start
-worker: java $JVM_OPTS -cp target/worker-standalone.jar clojure.main -m worker.core
+worker: java $JVM_OPTS -cp target/uberjar/worker-standalone.jar worker.core
