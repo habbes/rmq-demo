@@ -53,7 +53,7 @@ function setClientId () {
  * establish websocket connection to server
  */
 function connectSocket () {
-    socket = new WebSocket('ws://localhost:3000/jobs');
+    socket = new WebSocket(getSocketUrl());
 }
 
 /**
@@ -120,6 +120,15 @@ function handleIdMessage (msg) {
 function generateClientId () {
     return Math.random().toString(16).substr(2) + 
         Math.random().toString(16).substr(2);
+}
+
+/**
+ * returns the websocket url to the connected
+ * server based on the current url
+ * @return {String}
+ */
+function getSocketUrl () {
+    return window.location.href.replace('http', 'ws');
 }
 
 </script>    
