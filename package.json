@@ -28,5 +28,8 @@
   "homepage": "https://github.com/habbes/rmq-demo#readme",
   "dependencies": {
     "ws": "^3.0.0"
+  },
+  "engines": {
+    "node": "7.x"
   }
 }
