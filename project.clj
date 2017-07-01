@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]]
   :main ^:skip-aot worker.core
+  :uberjar-name "worker-standalone.jar"
   :target-path "target/%s"
   :min-lein-version "2.0.0"
   :profiles {:uberjar {:aot :all}})
