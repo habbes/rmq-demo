@@ -16,7 +16,7 @@
             </div>
             <div class="job-form">
                 <h3>New Job</h3>
-                <input id="newJobData" type="text" placeholder="Enter text input">
+                <input id="newJobInput" type="text" placeholder="Enter text input">
                 <button id="newJobBtn">Submit Job</button> 
             </div>
         </div>
@@ -31,6 +31,8 @@
 <script>
 
 var clientId, serverId, socket;
+var newJobBtn = document.getElementById('newJobBtn');
+var newJobInput = document.getElementById('newJobInput');
 
 init();
 
@@ -39,13 +41,19 @@ function init () {
     connectSocket();
     sendIdMessage();
     setMessageHandler();
+    newJobBtn.addEventListener('click', function (e) {
+        var input = newJobInput.value;
+        var job = buildJobMessage(clientId, input);
+        sendMessage(job);
+        newJobInput.value = '';
+    });
 }
 
 /**
  * generates and assigns clientId
  */
 function setClientId () {
-    clientId = generateClientId();
+    clientId = generateId();
     document.querySelector("#clientId").textContent = clientId;
 }
 
@@ -106,6 +114,15 @@ function buildIdMessage (id) {
     };
 }
 
+function buildJobMessage (cid, input) {
+    return {
+        type: 'job',
+        clientId: cid,
+        input: input,
+        jobId: generateId()
+    };
+}
+
 // MESSAGE HANDLERS
 
 function handleIdMessage (msg) {
@@ -114,10 +131,10 @@ function handleIdMessage (msg) {
 }
 
 /**
- * generates a random id to be assigned to the client app
+ * generates a random id to
  * @return {String}
  */
-function generateClientId () {
+function generateId () {
     return Math.random().toString(16).substr(2) + 
         Math.random().toString(16).substr(2);
 }

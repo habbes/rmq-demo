@@ -67,6 +67,8 @@ function handleMessage (msg) {
     switch (msg.type) {
         case 'id':
             return handleIdMessage(msg);
+        case 'job':
+            return handleJobMessage(msg);
         default:
             console.warn("Unhandled message", msg);
     }
@@ -78,4 +80,12 @@ function handleMessage (msg) {
  */
 function handleIdMessage (msg) {
     console.log('Client connected:', msg.clientId);
+}
+
+/**
+ * handles a job message from client
+ * @param {Object} msg 
+ */
+function handleJobMessage (msg) {
+    console.log('Job received:', msg);
 }
