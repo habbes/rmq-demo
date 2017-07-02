@@ -2,13 +2,22 @@
   (:gen-class)
   (:require [langohr.core :as rmq]
             [langohr.channel :as lch]
+            [langohr.exchange :as le]
             [langohr.queue :as lq]
             [langohr.basic :as lb]
             [langohr.consumers :as lc]
             [clojure.string :as s]
             [clojure.data.json :as json]))
 
-(def job-queue "jobs")
+(def jobs-q "jobs")
+(def events-x "events")
+
+(defn generate-id
+  "Generates random id"
+  []
+  (apply str (take 16 (repeatedly #(char (+ (rand 26) 65))))))
+
+(def worker-id (generate-id))
 
 (defn simulate-computation
   "Simulates a long-running CPU-intensive computation.
@@ -17,16 +26,27 @@
   (Thread/sleep 5)
   (s/reverse input))
 
+(defn emit-event
+  "Publishes a message to the events exchange"
+  [ch msg]
+  (->> msg
+       json/write-str
+       (lb/publish ch events-x "")))
+
 (defn handle-job
   "Handles job"
   [{:keys [input] :as job} ch delivery-tag]
-  (assoc job :result (simulate-computation input))
-  (lb/ack ch delivery-tag))
+  (let [result (conj job {:type "result"
+             :workerId worker-id
+             :result (simulate-computation input)})]
+    (lb/ack ch delivery-tag)
+    (emit-event ch result)))
 
 (defn print-job-info
   "Prints info"
   [{:keys [input jobId serverId clientId]}]
-  (println "Job received" "input:" input "jobId:" jobId "client:" clientId "server:" serverId))
+  (println "Job received" "input:" input "jobId:" jobId
+           "client:" clientId "server:" serverId))
 
 (defn to-json
   "Converts raw message payload to json"
@@ -46,7 +66,8 @@
   [& args]
   (with-open [conn (rmq/connect)]
     (let [ch (lch/open conn)]
-      (lq/declare ch job-queue {:durable true :auto-delete false})
+      (lq/declare ch jobs-q {:durable true :auto-delete false})
+      (le/fanout ch events-x {:durable false :auto-delete false})
       (lb/qos ch 1)
-      (println "Worker up. Waiting for jobs")
-      (lc/blocking-subscribe ch job-queue on-message))))
+      (println "Worker" worker-id "Waiting for jobs")
+      (lc/blocking-subscribe ch jobs-q on-message))))
