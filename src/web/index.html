@@ -30,105 +30,87 @@
     </footer>
 <script>
 
-var clientId, serverId, socket;
 var newJobBtn = document.getElementById('newJobBtn');
 var newJobInput = document.getElementById('newJobInput');
 
-init();
+window.onload = init;
 
 function init () {
-    setClientId();
-    connectSocket();
-    sendIdMessage();
-    setMessageHandler();
+    client = new Client(getSocketUrl());
+    document.getElementById('clientId').textContent = client.id;
+    client.onMessage = function (msg, c) {
+        switch (msg.type) {
+            case 'id':
+                return handleIdMessage(msg, c);
+            default:
+                console.log('Unhandled message', msg);
+        }
+    };
+
     newJobBtn.addEventListener('click', function (e) {
         var input = newJobInput.value;
-        var job = buildJobMessage(clientId, input);
-        sendMessage(job);
+        client.sendJobMessage(input);
         newJobInput.value = '';
     });
 }
-
-/**
- * generates and assigns clientId
- */
-function setClientId () {
-    clientId = generateId();
-    document.querySelector("#clientId").textContent = clientId;
-}
-
-/**
- * establish websocket connection to server
- */
-function connectSocket () {
-    socket = new WebSocket(getSocketUrl());
-}
-
-/**
- * send id message to identify self to server
- * this is the first message sent to server, right
- * after socket connection is open
- */
-function sendIdMessage () {
-    socket.onopen = function () {
-        var msg = buildIdMessage(clientId);
-        sendMessage(msg);
-    };
-}
-
-/**
- * sets up the websocket message handler
- * assigning handlers to messages based on their
- * type
- */
-function setMessageHandler () {
-    socket.onmessage = function (e) {
-        var msg = JSON.parse(e.data);
-        switch (msg.type) {
-            case 'id':
-                return handleIdMessage(msg);
-            default:
-                console.warn("Unhandled message:", msg);
-        }
-    };
-}
-
-/**
- * send a message to the server
- * @param {Object} msg
- */
-function sendMessage (msg) {
-    socket.send(JSON.stringify(msg));
-}
-
-/**
- * constructs and ID message
- * used to identify the client to the server
- * @param {String} id client id
- * @return {Object}
- */
-function buildIdMessage (id) {
-    return {
-        type: 'id',
-        clientId: id
-    };
-}
-
-function buildJobMessage (cid, input) {
-    return {
-        type: 'job',
-        clientId: cid,
-        input: input,
-        jobId: generateId()
-    };
-}
-
 // MESSAGE HANDLERS
 
-function handleIdMessage (msg) {
-    serverId = msg.serverId;
-    document.querySelector("#serverId").textContent = serverId;
+function handleIdMessage (msg, cl) {
+    document.getElementById('serverId').textContent = cl.serverId;
 }
+
+</script>
+<script>
+// CLIENT CLASS
+class Client {
+    constructor (url) {
+        this.id = generateId();
+        this.serverId = null;
+        this.socket = new WebSocket(url);
+        this.socket.onopen = this._onSockOpen.bind(this);
+        this.socket.onmessage = this._onSockMessage.bind(this);
+    }
+
+    _onSockOpen () {
+        this.sendIdMessage();
+    }
+
+    _onSockMessage (e) {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'id') {
+            this.serverId = msg.serverId;
+        }
+        if (this.onMessage) {
+            this.onMessage(msg, this);
+        }
+        else {
+            console.warn('No message handler defined for client. Unhandled message:', msg);
+        }
+    }
+
+    send (msg) {
+        this.socket.send(JSON.stringify(msg));
+    }
+
+    sendIdMessage () {
+        this.send({
+            type: 'id',
+            clientId: this.id
+        });
+    }
+
+    sendJobMessage (input) {
+        this.send({
+            type: 'job',
+            clientId: this.id,
+            jobId: generateId(),
+            input: input
+        });
+    }
+}
+</script> 
+<script>
+// HELPERS
 
 /**
  * generates a random id to
@@ -145,9 +127,8 @@ function generateId () {
  * @return {String}
  */
 function getSocketUrl () {
-    return window.location.href.replace('http', 'ws');
+    return window.location.href.replace(/^http/, 'ws');
 }
-
-</script>    
+</script>
 </body>
 </html>
