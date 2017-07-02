@@ -15,7 +15,7 @@ exports.getChannel = async function () {
     if (channel) return channel;
     const conn = await amqp.connect(AMQP_URL);
     channel = await conn.createChannel();
-    channel.assertQueue(JOB_QUEUE);
+    channel.assertQueue(JOB_QUEUE, {durable:true});
     return channel;
 };
 
