@@ -9,7 +9,7 @@ const SERVER_ID = generateServerId();
 // Run web server to server static html page
 
 const server = http.createServer((req, res) => {
-    const stream = fs.createReadStream(path.join(__dirname, '../web/index.html'));
+    const stream = fs.createReadStream(path.join(__dirname, '../client/index.html'));
     res.writeHead(200, {'content-type': 'text/html'});
     stream.pipe(res);
 });
