@@ -27,10 +27,10 @@
       (json/read-str :key-fn keyword)))
 
 (defn rand-between
-  "Genartes random int between a (inclusive)
+  "Generates random int between a (inclusive)
   and b (exclusive)"
   [a b]
-  (+ a  (rand (- b a))))
+  (+ a (rand (- b a))))
 
 (defn print-job-info
   "Prints info"
