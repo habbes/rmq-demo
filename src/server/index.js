@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const WebSocket = require('ws');
+const amqp = require('./amqp');
+
 const PORT = process.env.PORT || 3000;
 const SERVER_ID = generateServerId();
 
@@ -87,5 +89,6 @@ function handleIdMessage (msg) {
  * @param {Object} msg 
  */
 function handleJobMessage (msg) {
-    console.log('Job received:', msg);
+    msg.serverId = SERVER_ID;
+    amqp.sendJob(msg);
 }
