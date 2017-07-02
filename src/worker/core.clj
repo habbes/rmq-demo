@@ -26,6 +26,12 @@
       (String. "utf-8")
       (json/read-str :key-fn keyword)))
 
+(defn rand-between
+  "Genartes random int between a (inclusive)
+  and b (exclusive)"
+  [a b]
+  (+ a  (rand (- b a))))
+
 (defn print-job-info
   "Prints info"
   [{:keys [input jobId serverId clientId]}]
@@ -36,7 +42,7 @@
   "Simulates a long-running CPU-intensive computation.
   Reverses the input string after a forced delay"
   [input]
-  (Thread/sleep (* 1000 (rand-int 5 11)))
+  (Thread/sleep (* 1000 (rand-between 5 11)))
   (s/reverse input))
 
 (defn emit-event
