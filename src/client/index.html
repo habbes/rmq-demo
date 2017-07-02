@@ -70,7 +70,11 @@ function handleIdMessage (msg, cl) {
 <script>
 // CLIENT CLASS
 
-
+/**
+ * wrapper around websocket connection to server
+ * @prop {String} id the client's autogenerate random id
+ * @param {String} serverId the id of the connected server, determined after successful handshake
+ */
 class Client {
     /**
      * @param {String} url
@@ -101,12 +105,20 @@ class Client {
         if (msg.type === 'id') {
             this.serverId = msg.serverId;
         }
-        if (this.onMessage) {
-            this.onMessage(msg, this);
+        if (this._onMessage) {
+            this._onMessage(msg, this);
         }
         else {
             console.warn('No message handler defined for client. Unhandled message:', msg);
         }
+    }
+
+    /**
+     * sets message handler
+     * @param {messageHandler} handler function called when message is received
+     */
+    setMessageHandler (handler) {
+        this._onMessage = handler;
     }
 
     /**
@@ -141,6 +153,12 @@ class Client {
         });
     }
 }
+
+/**
+ * @callback messageHandler
+ * @param {Object} msg the message received
+ * @param {Client} client the client instance that received the message
+ */
 </script> 
 <script>
 // HELPERS
