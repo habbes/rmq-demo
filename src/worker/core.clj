@@ -19,11 +19,24 @@
 
 (def worker-id (generate-id))
 
+(defn to-json
+  "Converts raw message payload to json"
+  [payload]
+  (-> payload
+      (String. "utf-8")
+      (json/read-str :key-fn keyword)))
+
+(defn print-job-info
+  "Prints info"
+  [{:keys [input jobId serverId clientId]}]
+  (println "Job received" "input:" input "jobId:" jobId
+           "client:" clientId "server:" serverId))
+
 (defn simulate-computation
   "Simulates a long-running CPU-intensive computation.
   Reverses the input string after a forced delay"
   [input]
-  (Thread/sleep 5)
+  (Thread/sleep (* 1000 (rand-int 5 11)))
   (s/reverse input))
 
 (defn emit-event
@@ -41,19 +54,6 @@
              :result (simulate-computation input)})]
     (lb/ack ch delivery-tag)
     (emit-event ch result)))
-
-(defn print-job-info
-  "Prints info"
-  [{:keys [input jobId serverId clientId]}]
-  (println "Job received" "input:" input "jobId:" jobId
-           "client:" clientId "server:" serverId))
-
-(defn to-json
-  "Converts raw message payload to json"
-  [payload]
-  (-> payload
-      (String. "utf-8")
-      (json/read-str :key-fn keyword)))
 
 (defn on-message
   "Handles incoming message"
