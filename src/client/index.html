@@ -44,28 +44,37 @@ function init () {
     document.getElementById('clientId').textContent = client.id;
 
     // set up handler for received messages
-    client.onMessage = function (msg, c) {
+    client.setMessageHandler((msg, c) => {
         switch (msg.type) {
             case 'id':
                 return handleIdMessage(msg, c);
             default:
                 console.log('Unhandled message', msg);
         }
-    };
+    });
 
     // handler to submit new job
-    newJobBtn.addEventListener('click', function (e) {
+    newJobBtn.addEventListener('click', (e) => {
         var input = newJobInput.value;
         client.sendJobMessage(input);
         newJobInput.value = '';
     });
 }
+
+</script>
+<script>
 // MESSAGE HANDLERS
 
-function handleIdMessage (msg, cl) {
-    document.getElementById('serverId').textContent = cl.serverId;
+/**
+ * handles id message sent by server to identify
+ * itself
+ * @param {Object} msg
+ * @param {Client} client
+ */
+function handleIdMessage (msg, client) {
+    // display server id on page
+    document.getElementById('serverId').textContent = client.serverId;
 }
-
 </script>
 <script>
 // CLIENT CLASS
@@ -73,7 +82,7 @@ function handleIdMessage (msg, cl) {
 /**
  * wrapper around websocket connection to server
  * @prop {String} id the client's autogenerate random id
- * @param {String} serverId the id of the connected server, determined after successful handshake
+ * @prop {String} serverId the id of the connected server, determined after successful handshake
  */
 class Client {
     /**
