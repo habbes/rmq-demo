@@ -35,9 +35,15 @@ var newJobInput = document.getElementById('newJobInput');
 
 window.onload = init;
 
+/**
+ * creates client and sets up handlers
+ */
 function init () {
     client = new Client(getSocketUrl());
+    // display client id on page
     document.getElementById('clientId').textContent = client.id;
+
+    // set up handler for received messages
     client.onMessage = function (msg, c) {
         switch (msg.type) {
             case 'id':
@@ -47,6 +53,7 @@ function init () {
         }
     };
 
+    // handler to submit new job
     newJobBtn.addEventListener('click', function (e) {
         var input = newJobInput.value;
         client.sendJobMessage(input);
@@ -62,19 +69,33 @@ function handleIdMessage (msg, cl) {
 </script>
 <script>
 // CLIENT CLASS
+
+
 class Client {
+    /**
+     * @param {String} url
+     */
     constructor (url) {
         this.id = generateId();
         this.serverId = null;
+        // setup websocket connection to server
         this.socket = new WebSocket(url);
         this.socket.onopen = this._onSockOpen.bind(this);
         this.socket.onmessage = this._onSockMessage.bind(this);
     }
 
+    /**
+     * handles socket's open event
+     */
     _onSockOpen () {
         this.sendIdMessage();
     }
 
+    /**
+     * handles socket's message event
+     * parses the message and dispatches to defined message
+     * handler
+     */
     _onSockMessage (e) {
         const msg = JSON.parse(e.data);
         if (msg.type === 'id') {
@@ -88,21 +109,33 @@ class Client {
         }
     }
 
+    /**
+     * send msg to server
+     * @param {Object} msg message should have at least
+     * a type key
+     */
     send (msg) {
+        msg.clientId = this.id
         this.socket.send(JSON.stringify(msg));
     }
 
+    /**
+     * send id message, used to identify client to
+     * server, should be the first message sent
+     */
     sendIdMessage () {
         this.send({
-            type: 'id',
-            clientId: this.id
+            type: 'id'
         });
     }
 
+    /**
+     * send job message to server
+     * @param {String} input job input
+     */
     sendJobMessage (input) {
         this.send({
             type: 'job',
-            clientId: this.id,
             jobId: generateId(),
             input: input
         });
@@ -127,7 +160,7 @@ function generateId () {
  * @return {String}
  */
 function getSocketUrl () {
-    return window.location.href.replace(/^http/, 'ws');
+    return location.href.replace(/^http/, 'ws');
 }
 </script>
 </body>
