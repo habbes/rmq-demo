@@ -22,6 +22,8 @@
         </div>
         <div class="right">
             <h4>Job Results</h4>
+            <div id="results">
+            </div>
         </div>
     </div>
     
@@ -40,6 +42,7 @@ window.onload = init;
  */
 function init () {
     const client = new Client(getSocketUrl());
+    const results = new ResultsContainer(document.getElementById('results'));
     // display client id on page
     document.getElementById('clientId').textContent = client.id;
 
@@ -48,6 +51,8 @@ function init () {
         switch (msg.type) {
             case 'id':
                 return handleIdMessage(msg, c);
+            case 'result':
+                return results.addResult(msg);
             default:
                 console.log('Unhandled message', msg);
         }
@@ -169,6 +174,44 @@ class Client {
  * @param {Client} client the client instance that received the message
  */
 </script> 
+<script>
+class ResultsContainer {
+    /**
+     * @param {HTMLElement} el
+     */
+    constructor (el) {
+        this.container = el;
+        this.items = {};
+    }
+
+    addResult (res) {
+        const el = this.createResultEl(res);
+        this.items[res.id] = el;
+        this.container.appendChild(el);
+    }
+
+    /**
+     * creates element representing
+     * the specified result object
+     * @param {Object} res job result message from server
+     * @return {HTMLElement}
+     */
+    createResultEl (res) {
+        const el = document.createElement('div');
+        el.setAttribute('data-id', res.jobId);
+        el.classList.add('result');
+        const inp = document.createElement('div');
+        inp.classList.add('input');
+        inp.textContent = `Input: ${res.input}`;
+        el.appendChild(inp);
+        const ans = document.createElement('div');
+        ans.classList.add('output');
+        ans.textContent = `Output: ${res.result}`;
+        el.appendChild(ans);
+        return el;
+    }
+}
+</script>
 <script>
 // HELPERS
 
