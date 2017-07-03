@@ -31,6 +31,15 @@ wss.on('connection', conn => {
     sendMessage(conn, buildIdMessage(SERVER_ID));
 });
 
+amqp.subscribe((msg) => {
+    switch (msg.type) {
+        case 'result':
+            return broadcastClients(msg);
+        default:
+            console.log('Unhandled event', msg);
+    }
+});
+
 
 /**
  * generates a random id to assign to server instance
@@ -91,4 +100,10 @@ function handleIdMessage (msg) {
 function handleJobMessage (msg) {
     msg.serverId = SERVER_ID;
     amqp.sendJob(msg);
+}
+
+function broadcastClients (msg) {
+    wss.clients.forEach(c => {
+        sendMessage(c, msg);
+    });
 }
