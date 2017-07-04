@@ -2,34 +2,74 @@
 <html lang="en">
 <head>
     <title>RabbitMQ Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html {
+            height: 100%;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            height: 100%;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        header, footer {
+            text-align: center;
+        }
+
+        .main  {
+            margin: 10px 100px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        .left {
+            flex-grow: 2;
+        }
+
+        .right {
+            flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>RabbitMQ Demo</h1>
-    </header>
+    <div class="container">
+        <header>
+            <h1>RabbitMQ Demo</h1>
+        </header>
 
-    <div class="main">
-        <div class="left">
-            <div id="clientInfo">
-                <div>Client ID: <span data-prop="clientId"></span></div>
-                <div>Connected to: <span data-prop="serverId"></span></div>
+        <div class="main">
+            <div class="left">
+                <div id="clientInfo">
+                    <div>Client ID: <span data-prop="clientId"></span></div>
+                    <div>Connected to: <span data-prop="serverId"></span></div>
+                </div>
+                <div id="jobInput">
+                    <h3>New Job</h3>
+                    <input type="text" placeholder="Enter job input">
+                    <button >Submit Job</button> 
+                </div>
             </div>
-            <div id="jobInput">
-                <h3>New Job</h3>
-                <input type="text" placeholder="Enter job input">
-                <button >Submit Job</button> 
+            <div class="right">
+                <h4>Job Results</h4>
+                <div id="results">
+                </div>
             </div>
         </div>
-        <div class="right">
-            <h4>Job Results</h4>
-            <div id="results">
-            </div>
-        </div>
+        
+        <footer>
+            <a href="https://github.com/habbes/rmq-demo">Documentation and Source Code</a>
+        </footer>
     </div>
-    
-    <footer>
-        <a href="https://github.com/habbes/rmq-demo">Documentation and Source Code</a>
-    </footer>
 <script>
 
 var newJobBtn = document.getElementById('newJobBtn');
