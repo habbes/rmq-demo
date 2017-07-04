@@ -168,6 +168,11 @@ class JobInput {
         this.input = el.getElementsByTagName('input')[0];
         this.btn = el.getElementsByTagName('button')[0];
         this.btn.onclick = this._onSubmit.bind(this);
+        this.input.onkeyup = e => {
+            if (e.keyCode === 13) {
+                this._onSubmit()
+            }
+        };
     }
 
     /**
