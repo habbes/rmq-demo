@@ -14,10 +14,10 @@
                 <div>Client ID: <span id="clientId"></span></div>
                 <div>Connected to: <span id="serverId"></span></div>
             </div>
-            <div class="job-form">
+            <div id="jobInput">
                 <h3>New Job</h3>
-                <input id="newJobInput" type="text" placeholder="Enter text input">
-                <button id="newJobBtn">Submit Job</button> 
+                <input type="text" placeholder="Enter job input">
+                <button >Submit Job</button> 
             </div>
         </div>
         <div class="right">
@@ -43,6 +43,7 @@ window.onload = init;
 function init () {
     const client = new Client(getSocketUrl());
     const results = new ResultsContainer(document.getElementById('results'));
+    const jobInput = new JobInput(document.getElementById('jobInput'));
     // display client id on page
     document.getElementById('clientId').textContent = client.id;
 
@@ -58,11 +59,8 @@ function init () {
         }
     });
 
-    // handler to submit new job
-    newJobBtn.addEventListener('click', (e) => {
-        var input = newJobInput.value;
-        client.sendJobMessage(input);
-        newJobInput.value = '';
+    jobInput.setJobHandler(job => {
+        client.sendJobMessage(job)
     });
 }
 
@@ -157,14 +155,10 @@ class Client {
 
     /**
      * send job message to server
-     * @param {String} input job input
+     * @param {Object} job job object {input, jobId}
      */
-    sendJobMessage (input) {
-        this.send({
-            type: 'job',
-            jobId: generateId(),
-            input: input
-        });
+    sendJobMessage (job) {
+        this.send(Object.assign({type: 'job'}, job));
     }
 }
 
@@ -173,8 +167,59 @@ class Client {
  * @param {Object} msg the message received
  * @param {Client} client the client instance that received the message
  */
+</script>
+<script>
+/**
+ * manages the new job form
+ */
+class JobInput {
+
+    /**
+     * @param {HTMLElement} el
+     */
+    constructor (el) {
+        this.container = el;
+        this.input = el.getElementsByTagName('input')[0];
+        this.btn = el.getElementsByTagName('button')[0];
+        this.btn.onclick = this._onSubmit.bind(this);
+    }
+
+    /**
+     * handles submitting new form
+     */
+    _onSubmit () {
+        const job = this.createJob();
+        this.input.value = '';
+        this._handleJob && this._handleJob(job);
+    }
+
+    /**
+     * sets handler that will be called
+     * when new job is submitted
+     * @param {Function} f function f(job) that takes
+     * a job object as input
+     */
+    setJobHandler (f) {
+        this._handleJob = f;
+    }
+
+    /**
+     * create job based on user input
+     * @return {Object} job
+     */
+    createJob () {
+        return {
+            jobId: generateId(),
+            input: this.input.value
+        }
+    }
+}
 </script> 
 <script>
+/**
+ * class managing the page view
+ * that displays job results
+ */
 class ResultsContainer {
     /**
      * @param {HTMLElement} el
