@@ -3,14 +3,22 @@
 <head>
     <title>RabbitMQ Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto" rel="stylesheet">
     <style>
         html {
             height: 100%;
         }
         body {
-            font-family: Arial, Helvetica, sans-serif;
             margin: 0;
             height: 100%;
+        }
+
+        body, input, button {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .heading {
+            font-family: 'Montserrat', sans-serif;
         }
 
         .container {
@@ -39,12 +47,32 @@
         .right {
             flex-grow: 1;
         }
+
+        /* job input */
+        #jobInput {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+        }
+
+        #jobInput input {
+            height: 20px;
+            padding: 10px;
+        }
+        #jobInput button {
+            padding: 10px;
+        }
+
+        /* job results */
+        #results {
+
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>RabbitMQ Demo</h1>
+            <h1 class="heading">RabbitMQ Demo</h1>
         </header>
 
         <div class="main">
@@ -54,14 +82,26 @@
                     <div>Connected to: <span data-prop="serverId"></span></div>
                 </div>
                 <div id="jobInput">
-                    <h3>New Job</h3>
+                    <h3 class="heading">New Job</h3>
                     <input type="text" placeholder="Enter job input">
                     <button >Submit Job</button> 
                 </div>
             </div>
             <div class="right">
-                <h4>Job Results</h4>
+                <h4 class="heading">Job Results</h4>
                 <div id="results">
+                    <div class="result">
+                        <div class="result-prop">
+                            <span class="result-label">In:</span><span class="result-val">input</span>
+                            <span class="result-label">Out:</span><span class="result-val">output</span>
+                        </div>
+                        <div class="result-details">
+                            <span>Job: ddsfsdf</span>
+                            <span>Client: sdfdsfsf</span>
+                            <span>Server: sdfsdfsf</span>
+                            <span>Worker: ssdfdsf</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -278,11 +318,11 @@ class ResultsContainer {
         el.classList.add('result');
         const inp = document.createElement('div');
         inp.classList.add('input');
-        inp.textContent = `Input: ${res.input}`;
+        inp.textContent = `In: ${res.input}`;
         el.appendChild(inp);
         const ans = document.createElement('div');
         ans.classList.add('output');
-        ans.textContent = `Output: ${res.result}`;
+        ans.textContent = `Out: ${res.result}`;
         el.appendChild(ans);
         return el;
     }
