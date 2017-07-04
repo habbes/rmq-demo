@@ -10,9 +10,9 @@
 
     <div class="main">
         <div class="left">
-            <div class="client-details">
-                <div>Client ID: <span id="clientId"></span></div>
-                <div>Connected to: <span id="serverId"></span></div>
+            <div id="clientInfo">
+                <div>Client ID: <span data-prop="clientId"></span></div>
+                <div>Connected to: <span data-prop="serverId"></span></div>
             </div>
             <div id="jobInput">
                 <h3>New Job</h3>
@@ -44,14 +44,15 @@ function init () {
     const client = new Client(getSocketUrl());
     const results = new ResultsContainer(document.getElementById('results'));
     const jobInput = new JobInput(document.getElementById('jobInput'));
+    const clientInfo = new ClientInfo(document.getElementById('clientInfo'));
     // display client id on page
-    document.getElementById('clientId').textContent = client.id;
+    clientInfo.clientId = client.id;
 
     // set up handler for received messages
     client.setMessageHandler((msg, c) => {
         switch (msg.type) {
             case 'id':
-                return handleIdMessage(msg, c);
+                return clientInfo.serverId = client.serverId;
             case 'result':
                 return results.addResult(msg);
             default:
@@ -66,21 +67,6 @@ function init () {
 
 </script>
 <script>
-// MESSAGE HANDLERS
-
-/**
- * handles id message sent by server to identify
- * itself
- * @param {Object} msg
- * @param {Client} client
- */
-function handleIdMessage (msg, client) {
-    // display server id on page
-    document.getElementById('serverId').textContent = client.serverId;
-}
-</script>
-<script>
-// CLIENT CLASS
 
 /**
  * wrapper around websocket connection to server
@@ -258,6 +244,36 @@ class ResultsContainer {
 }
 </script>
 <script>
+/**
+ * manages the page view that displays client details
+ */
+class ClientInfo {
+
+    /**
+     * @param {HTMLElement} el element containing the details
+     */
+    constructor (el) {
+        this.container = el;
+        this.serverIdEl = el.querySelector("[data-prop=serverId]");
+        this.clientIdEl = el.querySelector("[data-prop=clientId]");
+    }
+
+    /**
+     * @param {String} id
+     */
+    set clientId (id) {
+        this.clientIdEl.textContent = id;
+    }
+
+    /**
+     * @param {String} id
+     */
+    set serverId (id) {
+        this.serverIdEl.textContent = id;
+    }
+}
+</script>
+<script>
 // HELPERS
 
 /**
@@ -275,7 +291,7 @@ function generateId () {
  * @return {String}
  */
 function getSocketUrl () {
-    return location.href.replace(/^http/, 'ws');
+    return location.origin.replace(/^http/, 'ws');
 }
 </script>
 </body>
