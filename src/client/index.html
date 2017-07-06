@@ -11,20 +11,27 @@
         body {
             margin: 0;
             height: 100%;
+            background: #6270A1;
+            color: #fffefb;
         }
 
         body, input, button {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
 
         .heading {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
 
         .container {
             display: flex;
             flex-direction: column;
             height: 100%;
+        }
+
+        header {
+            background: #353C57;
+            color: #fffefb;
         }
 
         header, footer {
@@ -48,6 +55,12 @@
             flex-grow: 1;
         }
 
+        .prop {
+            color: #878786;
+            font-size: 0.9em;
+        }
+        
+
         /* job input */
         #jobInput {
             display: flex;
@@ -56,16 +69,31 @@
         }
 
         #jobInput input {
-            height: 20px;
+            box-sizing: border-box;
+            font-size: 1em;
+            height: 60px;
             padding: 10px;
+            margin-bottom: 2px;
+            border: 1px solid #878786;
+            border-radius: 2px;
+            text-align: center;
         }
         #jobInput button {
+            box-sizing: border-box;
+            font-size: 1em;
+            height: 60px;
             padding: 10px;
+            background: #010101;
+            border: none;
+            border-radius: 2px;
+            color: #fffefb;
         }
 
         /* job results */
-        #results {
-
+        .result {
+            background: #7E8FD5;
+            padding: 10px;
+            margin-bottom: 2px;
         }
     </style>
 </head>
@@ -78,8 +106,8 @@
         <div class="main">
             <div class="left">
                 <div id="clientInfo">
-                    <div>Client ID: <span data-prop="clientId"></span></div>
-                    <div>Connected to: <span data-prop="serverId"></span></div>
+                    <div class="prop">Client ID: <span data-prop="clientId"></span></div>
+                    <div class="prop">Connected to: <span data-prop="serverId"></span></div>
                 </div>
                 <div id="jobInput">
                     <h3 class="heading">New Job</h3>
@@ -92,14 +120,30 @@
                 <div id="results">
                     <div class="result">
                         <div class="result-prop">
-                            <span class="result-label">In:</span><span class="result-val">input</span>
-                            <span class="result-label">Out:</span><span class="result-val">output</span>
+                            <span class="result-label">In:</span>
+                            <span class="result-val">${res.input}</span>
+                        </div>
+                        <div class="result-prop">
+                            <span class="result-label">Out:</span>
+                            <span class="result-val">${res.result}</span>
                         </div>
                         <div class="result-details">
-                            <span>Job: ddsfsdf</span>
-                            <span>Client: sdfdsfsf</span>
-                            <span>Server: sdfsdfsf</span>
-                            <span>Worker: ssdfdsf</span>
+                            <div class="prop">
+                                <span class="prop-label">Job:</span>
+                                <span class="prop-val">${res.jobId}</span>
+                            </div>
+                            <div class="prop">
+                                <span class="prop-label">Client:</span>
+                                <span class="prop-val">${res.clientId}</span>
+                            </div>
+                            <div class="prop">
+                                <span class="prop-label">Server:</span>
+                                <span class="prop-val">${res.serverId}</span>
+                            </div>
+                            <div class="prop">
+                                <span class="prop-label">Worker:</span>
+                                <span class="prop-val">${res.jobId}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -307,23 +351,43 @@ class ResultsContainer {
     }
 
     /**
-     * creates element representing
+     * creates element for representing
      * the specified result object
      * @param {Object} res job result message from server
      * @return {HTMLElement}
      */
     createResultEl (res) {
         const el = document.createElement('div');
-        el.setAttribute('data-id', res.jobId);
         el.classList.add('result');
-        const inp = document.createElement('div');
-        inp.classList.add('input');
-        inp.textContent = `In: ${res.input}`;
-        el.appendChild(inp);
-        const ans = document.createElement('div');
-        ans.classList.add('output');
-        ans.textContent = `Out: ${res.result}`;
-        el.appendChild(ans);
+        el.innerHTML =  (
+        `<div class="result">
+            <div class="result-prop">
+                <span class="result-label">In:</span>
+                <span class="result-val">${res.input}</span>
+            </div>
+            <div class="result-prop">
+                <span class="result-label">Out:</span>
+                <span class="result-val">${res.result}</span>
+            </div>
+            <div class="result-details">
+                <div class="prop">
+                    <span class="prop-label">Job:</span>
+                    <span class="prop-val">${res.jobId}</span>
+                </div>
+                <div class="prop">
+                    <span class="prop-label">Client:</span>
+                    <span class="prop-val">${res.clientId}</span>
+                </div>
+                <div class="prop">
+                    <span class="prop-label">Server:</span>
+                    <span class="prop-val">${res.serverId}</span>
+                </div>
+                <div class="prop">
+                    <span class="prop-label">Worker:</span>
+                    <span class="prop-val">${res.jobId}</span>
+                </div>
+            </div>
+        </div>`);
         return el;
     }
 }
