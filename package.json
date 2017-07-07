@@ -26,7 +26,12 @@
     "url": "https://github.com/habbes/rmq-demo/issues"
   },
   "homepage": "https://github.com/habbes/rmq-demo#readme",
-  "dependencies": {},
+  "dependencies": {
+    "amqplib": "0.5.1",
+    "bufferutil": "3.0.2",
+    "utf-8-validate": "3.0.3",
+    "ws": "3.0.0"
+  },
   "engines": {
     "node": "7.7.1",
     "npm": "4.1.2"
