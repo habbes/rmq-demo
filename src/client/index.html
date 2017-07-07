@@ -341,12 +341,14 @@ class ResultsContainer {
      */
     constructor (el) {
         this.container = el;
-        this.items = {};
     }
 
+    /**
+     * add result item to the page
+     * @param {Object} res
+     */
     addResult (res) {
         const el = this.createResultEl(res);
-        this.items[res.id] = el;
         this.container.appendChild(el);
     }
 
@@ -408,6 +410,7 @@ class ClientInfo {
     }
 
     /**
+     * displays the client id
      * @param {String} id
      */
     set clientId (id) {
@@ -415,6 +418,7 @@ class ClientInfo {
     }
 
     /**
+     * displays the server id
      * @param {String} id
      */
     set serverId (id) {
