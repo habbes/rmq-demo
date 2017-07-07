@@ -87,8 +87,6 @@ module.exports = class ClientHandler {
      * @param {object} msg 
      */
     broadcast (msg) {
-        this.wss.clients.forEach(ws => {
-            this.send(ws, msg);
-        });
+        this.wss.clients.forEach(ws => this.send(ws, msg));
     }
 };

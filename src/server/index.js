@@ -18,9 +18,8 @@ const server = http.createServer((req, res) => {
     stream.pipe(res);
 });
 
-server.listen(PORT, () => {
-    console.log("Server %s listening on port %d", SERVER_ID, PORT);
-});
+server.listen(PORT, () => 
+    console.log("Server %s listening on port %d", SERVER_ID, PORT));
 
 // WebSocket server
 
