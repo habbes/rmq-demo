@@ -6,7 +6,7 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto|Source+Sans+Pro" rel="stylesheet">
     <style>
         html {
-            height: 100%;
+            min-height: 100%;
         }
         body {
             margin: 0;
@@ -26,7 +26,7 @@
         .container {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            min-height: 100%;
         }
 
         header {
@@ -74,6 +74,7 @@
         #jobInput {
             display: flex;
             flex-direction: column;
+            margin-bottom: 10px;
         }
 
         #jobInput input,
@@ -108,12 +109,31 @@
             margin-bottom: 2px;
         }
 
+        .result.from-me {
+            background: #fff488;
+            color: #807b48;
+        }
+
         /* property details */
+        .prop,
+        .result-prop {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
         .prop {
             color: #efefef;
             font-size: 0.9em;
             font-family: 'Source Sans Pro', Courier New, Courier, monospace;
         }
+        #clientInfo .prop {
+            font-size: 1.1em;
+        }
+        .result.from-me .prop {
+            color: #806f48;
+        }
+
+
     </style>
 </head>
 <body>
@@ -140,34 +160,6 @@
             <div class="right">
                 <h3 class="heading">Job Results</h3>
                 <div id="results">
-                    <div class="result">
-                        <div class="result-prop">
-                            <span class="result-label">In:</span>
-                            <span class="result-val">${res.input}</span>
-                        </div>
-                        <div class="result-prop">
-                            <span class="result-label">Out:</span>
-                            <span class="result-val">${res.result}</span>
-                        </div>
-                        <div class="result-details">
-                            <div class="prop">
-                                <span class="prop-label">Job:</span>
-                                <span class="prop-val">${res.jobId}</span>
-                            </div>
-                            <div class="prop">
-                                <span class="prop-label">Client:</span>
-                                <span class="prop-val">${res.clientId}</span>
-                            </div>
-                            <div class="prop">
-                                <span class="prop-label">Server:</span>
-                                <span class="prop-val">${res.serverId}</span>
-                            </div>
-                            <div class="prop">
-                                <span class="prop-label">Worker:</span>
-                                <span class="prop-val">${res.workerId}</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -200,7 +192,7 @@ function init () {
             case 'id':
                 return clientInfo.serverId = client.serverId;
             case 'result':
-                return results.addResult(msg);
+                return results.addResult(msg, client);
             default:
                 console.log('Unhandled message', msg);
         }
@@ -369,8 +361,8 @@ class ResultsContainer {
      * add result item to the page
      * @param {Object} res
      */
-    addResult (res) {
-        const el = this.createResultEl(res);
+    addResult (res, client) {
+        const el = this.createResultEl(res, client);
         this.container.appendChild(el);
     }
 
@@ -380,11 +372,10 @@ class ResultsContainer {
      * @param {Object} res job result message from server
      * @return {HTMLElement}
      */
-    createResultEl (res) {
+    createResultEl (res, client) {
         const el = document.createElement('div');
-        el.classList.add('result');
         el.innerHTML =  (
-        `<div class="result">
+        `<div class="result ${res.clientId === client.id? 'from-me':''}">
             <div class="result-prop">
                 <span class="result-label">In:</span>
                 <span class="result-val">${res.input}</span>
@@ -408,7 +399,7 @@ class ResultsContainer {
                 </div>
                 <div class="prop">
                     <span class="prop-label">Worker:</span>
-                    <span class="prop-val">${res.jobId}</span>
+                    <span class="prop-val">${res.workerId}</span>
                 </div>
             </div>
         </div>`);
