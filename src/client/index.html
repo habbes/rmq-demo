@@ -210,9 +210,6 @@
     </div>
 <script>
 
-var newJobBtn = document.getElementById('newJobBtn');
-var newJobInput = document.getElementById('newJobInput');
-
 window.onload = init;
 
 /**
@@ -239,7 +236,7 @@ function init () {
     });
 
     jobInput.setJobHandler(job => {
-        client.sendJobMessage(job)
+        client.sendJobMessage(job);
     });
 }
 
@@ -405,6 +402,7 @@ class ResultsContainer {
     /**
      * add result item to the page
      * @param {Object} res
+     * @param {Client} client the current client
      */
     addResult (res, client) {
         const el = this.createResultEl(res, client);
@@ -415,6 +413,7 @@ class ResultsContainer {
      * creates element for representing
      * the specified result object
      * @param {Object} res job result message from server
+     * @param {Client} client the current client
      * @return {HTMLElement}
      */
     createResultEl (res, client) {
@@ -488,7 +487,7 @@ class ClientInfo {
 // HELPERS
 
 /**
- * generates a random id to
+ * generates a random id
  * @return {String}
  */
 function generateId () {
