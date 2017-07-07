@@ -15,7 +15,7 @@
 (defn generate-id
   "Generates random id"
   []
-  (apply str (take 16 (repeatedly #(char (+ (rand 26) 65))))))
+  (apply str (take 16 (repeatedly #(char (+ (rand 26) 97))))))
 
 (def worker-id (generate-id))
 
@@ -30,7 +30,13 @@
   "Generates random int between a (inclusive)
   and b (exclusive)"
   [a b]
-  (+ a (rand (- b a))))
+  (+ a (rand-int (- b a))))
+
+(defn env
+  "Gets the environment variable specified by key, or
+  dft if the variable does not exist."
+  [key dft]
+  (or (System/getenv key) dft))
 
 (defn print-job-info
   "Prints info"
@@ -70,10 +76,10 @@
 
 (defn -main
   [& args]
-  (with-open [conn (rmq/connect)]
+  (with-open [conn (rmq/connect {:uri (env "AMQP_URL" "amqp://localhost:5672")})]
     (let [ch (lch/open conn)]
       (lq/declare ch jobs-q {:durable true :auto-delete false})
       (le/fanout ch events-x {:durable false :auto-delete false})
-      (lb/qos ch 1)
+      (lb/qos ch (int (env "WORKER_PREFETCH_COUNT" 1)))
       (println "Worker" worker-id "Waiting for jobs")
       (lc/blocking-subscribe ch jobs-q on-message))))
