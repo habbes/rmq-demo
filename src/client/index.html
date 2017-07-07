@@ -357,6 +357,11 @@ class JobInput {
      * handles submitting new form
      */
     _onSubmit () {
+        if (!this.input.value) {
+            alert ('Please enter input for the job.');
+            this.input.focus();
+            return;
+        }
         const job = this.createJob();
         this.input.value = '';
         this._handleJob && this._handleJob(job);
@@ -403,7 +408,7 @@ class ResultsContainer {
      */
     addResult (res, client) {
         const el = this.createResultEl(res, client);
-        this.container.appendChild(el);
+        this.container.insertBefore(el, this.container.firstChild);
     }
 
     /**
