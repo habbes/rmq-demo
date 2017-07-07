@@ -80,6 +80,6 @@
     (let [ch (lch/open conn)]
       (lq/declare ch jobs-q {:durable true :auto-delete false})
       (le/fanout ch events-x {:durable false :auto-delete false})
-      (lb/qos ch (int (env "WORKER_MAX_JOBS" 1)))
+      (lb/qos ch (Integer/parseInt (env "WORKER_MAX_JOBS" 1)))
       (println "Worker" worker-id "Waiting for jobs")
       (lc/blocking-subscribe ch jobs-q on-message))))
