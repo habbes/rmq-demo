@@ -1,7 +1,6 @@
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
-const crypto = require('crypto');
 const WebSocket = require('ws');
 const amqp = require('./amqp');
 const { generateId } = require('./util');
