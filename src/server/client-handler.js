@@ -1,6 +1,5 @@
 const amqp = require('./amqp');
 
-
 /**
  * handles clients of the specified websocket server
  */

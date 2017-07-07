@@ -1,7 +1,6 @@
-
 /**
  * generates a random id
  * @return {String}
  */
-exports.generateId  = () => 
+exports.generateId = () => 
     crypto.randomBytes(12).toString('hex');

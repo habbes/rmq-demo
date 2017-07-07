@@ -10,7 +10,7 @@ const ClientHandler = require('./client-handler');
 const PORT = process.env.PORT || 3000;
 const SERVER_ID = generateId();
 
-// Run web server to server static html page
+// Run web server to serve static html page
 
 const server = http.createServer((req, res) => {
     const stream = fs.createReadStream(path.join(__dirname, '../client/index.html'));
