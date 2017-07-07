@@ -3,7 +3,7 @@
 <head>
     <title>RabbitMQ Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto|Source+Sans+Pro" rel="stylesheet">
     <style>
         html {
             height: 100%;
@@ -32,10 +32,25 @@
         header {
             background: #353C57;
             color: #fffefb;
+            padding: 2px 100px;
+            height: 50px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        header, footer {
-            text-align: center;
+        header h1 {
+            font-size: 1.2em;
+        }
+
+        nav a {
+            color: #fff488;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        nav a:hover {
+            font-weight: bold;
         }
 
         .main  {
@@ -48,41 +63,38 @@
         }
 
         .left {
-            flex-grow: 2;
+            width: 500px;
         }
 
         .right {
-            flex-grow: 1;
+            width: 500px;
         }
-
-        .prop {
-            color: #878786;
-            font-size: 0.9em;
-        }
-        
 
         /* job input */
         #jobInput {
             display: flex;
             flex-direction: column;
-            width: 300px;
         }
 
-        #jobInput input {
+        #jobInput input,
+        #jobInput button {
             box-sizing: border-box;
-            font-size: 1em;
+            width: 100%;
             height: 60px;
             padding: 10px;
             margin-bottom: 2px;
+            border-radius: 2px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        #jobInput input {
+           
             border: 1px solid #878786;
             border-radius: 2px;
             text-align: center;
         }
         #jobInput button {
-            box-sizing: border-box;
-            font-size: 1em;
-            height: 60px;
-            padding: 10px;
             background: #010101;
             border: none;
             border-radius: 2px;
@@ -95,28 +107,38 @@
             padding: 10px;
             margin-bottom: 2px;
         }
+
+        /* property details */
+        .prop {
+            color: #efefef;
+            font-size: 0.9em;
+            font-family: 'Source Sans Pro', Courier New, Courier, monospace;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1 class="heading">RabbitMQ Demo</h1>
+            <nav>
+                <a class="link" href="https://github.com/habbes/rmq-demo">Source</a>
+            </nav>
         </header>
 
         <div class="main">
             <div class="left">
-                <div id="clientInfo">
-                    <div class="prop">Client ID: <span data-prop="clientId"></span></div>
-                    <div class="prop">Connected to: <span data-prop="serverId"></span></div>
-                </div>
                 <div id="jobInput">
                     <h3 class="heading">New Job</h3>
                     <input type="text" placeholder="Enter job input">
                     <button >Submit Job</button> 
                 </div>
+                <div id="clientInfo">
+                    <div class="prop">Client ID: <span data-prop="clientId"></span></div>
+                    <div class="prop">Connected to: <span data-prop="serverId"></span></div>
+                </div>
             </div>
             <div class="right">
-                <h4 class="heading">Job Results</h4>
+                <h3 class="heading">Job Results</h3>
                 <div id="results">
                     <div class="result">
                         <div class="result-prop">
@@ -142,7 +164,7 @@
                             </div>
                             <div class="prop">
                                 <span class="prop-label">Worker:</span>
-                                <span class="prop-val">${res.jobId}</span>
+                                <span class="prop-val">${res.workerId}</span>
                             </div>
                         </div>
                     </div>
@@ -151,7 +173,7 @@
         </div>
         
         <footer>
-            <a href="https://github.com/habbes/rmq-demo">Documentation and Source Code</a>
+            
         </footer>
     </div>
 <script>
