@@ -66,7 +66,7 @@
   [ch {:keys [delivery-tag]} payload]
   (let [data (to-json payload)]
     (print-job-info data)
-    (handle-job data ch delivery-tag)))
+    (future (handle-job data ch delivery-tag))))
 
 (defn -main
   [& args]
