@@ -4,10 +4,11 @@ const fs = require('fs');
 const crypto = require('crypto');
 const WebSocket = require('ws');
 const amqp = require('./amqp');
+const { generateId } = require('./util');
 const ClientHandler = require('./client-handler');
 
 const PORT = process.env.PORT || 3000;
-const SERVER_ID = generateServerId();
+const SERVER_ID = generateId();
 
 // Run web server to server static html page
 
@@ -36,12 +37,3 @@ amqp.subscribe((msg) => {
             console.log('Unhandled event', msg);
     }
 });
-
-
-/**
- * generates a random id to assign to server instance
- * @return {String}
- */
-function generateServerId () {
-    return crypto.randomBytes(12).toString('hex');
-}
